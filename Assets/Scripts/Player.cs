@@ -24,7 +24,7 @@ public class Player : MovingObject
     {
         animator = GetComponent<Animator>();
         food = GameManager.instance.playerFoodPoints;
-        foodText.text = "Food:"+food;
+        foodText.text = "Food:" + food;
         base.Start();
     }
 
@@ -34,25 +34,38 @@ public class Player : MovingObject
     }
     void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log(other.tag);
         if (other.tag == "Food")
         {
             food += pointsPerFood;
-            foodText.text = "Food:"+food;
+            foodText.text = "Food:" + food;
             other.gameObject.SetActive(false);
         }
         else if (other.tag == "Soda")
         {
             food += pointsPerSoda;
-            foodText.text = "Food:"+food;
+            foodText.text = "Food:" + food;
             other.gameObject.SetActive(false);
         }
         else if (other.tag == "Exit")
         {
+            if (other.name == "Exit" || other.name == "Exit2")
+            {
+                other.name = "0";
+            }
+            if (GameManager.instance.level % 2 == 0)
+            {
+                Debug.Log(other.name);
+                GameManager.instance.currentloc = int.Parse(other.name);
+                GameManager.instance.currentname = GameManager.instance.castle_names[int.Parse(other.name)];
+            }
+            GameManager.instance.tempname = other.name;
             Invoke("Restart", restartLevelDelay);
             enabled = false;
         }
-        else if(other.tag == "back")
+        else if (other.tag == "back")
         {
+            GameManager.instance.tempname = other.name;
             Invoke("Restart", restartLevelDelay);
             enabled = false;
         }
@@ -71,11 +84,12 @@ public class Player : MovingObject
     protected override void AttempMove<T>(int xDir, int yDir)
     {
         LoseFood(1);
-        foodText.text = "Food:"+food;
+        foodText.text = "Food:" + food;
         base.AttempMove<T>(xDir, yDir);
         RaycastHit2D hit;
-        if(Move(xDir,yDir,out hit)){
-            SoundManager.instance.RandomizeSfx(moveSound1,moveSound2);
+        if (Move(xDir, yDir, out hit))
+        {
+            SoundManager.instance.RandomizeSfx(moveSound1, moveSound2);
         }
         CheckIfGameOver();
     }
@@ -110,7 +124,7 @@ public class Player : MovingObject
         {
             GameManager.instance.playerTurn = false;
             AttempMove<Wall>(horizontal, vertical);
-            
+
         }
     }
 }

@@ -27,20 +27,36 @@ public class BroadManager : MonoBehaviour
     public GameObject[] exitTile;
 
     public GameObject[] wallTiles;
+
     public GameObject[] foodTiles;
     public GameObject[] enemyTiles;
+    public GameObject background;
+    Text tribenum;
     Transform boardHolder;
     List<Vector3> gridPositions = new List<Vector3>();//所有可用位置数组
     //生成关卡
     public void SetUpScene(int level)
     {
+        tribenum = GameObject.Find("tribeinfo").GetComponent<Text>();
         if (level % 2 == 0)
         {
-            rows = 8;
-            columns = 8;
+            tribenum.text = "部落:" + GameManager.instance.castle_names[GameManager.instance.currentloc];
+            rows = 20;
+            columns = 30;
             BoardSetup();
-            Instantiate(exitTile[0], new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
-            Instantiate(exitTile[1], new Vector3(0, rows - 1, 0f), Quaternion.identity);
+            List<int> dest = new List<int>();
+            for (int i = 0; i < GameManager.instance.graph.ToArray().Length; i += 2)
+            {
+                if (GameManager.instance.graph[i] == GameManager.instance.currentloc)
+                    dest.Add(GameManager.instance.graph[i + 1]);
+                if (GameManager.instance.graph[i + 1] == GameManager.instance.currentloc)
+                    dest.Add(GameManager.instance.graph[i]);
+            }
+            for (int i = 0; i < dest.ToArray().Length; i++)
+            {
+                GameObject instance = Instantiate(exitTile[0], new Vector3(columns - 1, rows - 1 - i * 3, 0f), Quaternion.identity) as GameObject;
+                instance.name = dest[i].ToString();
+            }
             InitialiseList();
             LayoutObjectAtRandom(wallTiles, wallCount.minimum, wallCount.maximum);
             LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum);
@@ -51,8 +67,13 @@ public class BroadManager : MonoBehaviour
         rows = 8;
         columns = 15;
         BoardSetup();
-        Instantiate(exitTile[0], new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
-        Instantiate(exitTile[1], new Vector3(0, rows - 1, 0f), Quaternion.identity);
+        GameObject instance2 = Instantiate(exitTile[0], new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity) as GameObject;
+        instance2.name = GameManager.instance.tempname;
+        if (level != 1)
+        {
+           GameObject exitback = Instantiate(exitTile[1], new Vector3(-1, 0, 0f), Quaternion.identity) as GameObject;
+           exitback.name = GameManager .instance.currentname;
+        }
         InitialiseList();
         LayoutObjectAtRandom(wallTiles, wallCount.minimum, wallCount.maximum);
         LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum);
@@ -82,11 +103,32 @@ public class BroadManager : MonoBehaviour
         {
             for (int y = -1; y < rows + 1; y++)
             {
-                GameObject toInstantiate = floorTiles[UnityEngine.Random.Range(0, floorTiles.Length)];//地板
-                if (x == -1 || x == columns || y == -1 || y == rows)
-                    toInstantiate = OuterWallTiles[UnityEngine.Random.Range(0, OuterWallTiles.Length)];//外墙
-                GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;//实例化
-                instance.transform.SetParent(boardHolder);
+                if (GameManager.instance.level % 2 == 0)
+                {
+                    GameObject instance2 = Instantiate(background, new Vector3(14.5f, 9.5f, 0f), Quaternion.identity) as GameObject;
+                    Instantiate(OuterWallTiles[0], new Vector3(-1f,0f,0f), Quaternion.identity);
+                    instance2.transform.SetParent(boardHolder);
+                }
+                if (GameManager.instance.level == 1)
+                {
+                    GameObject toInstantiate = OuterWallTiles[UnityEngine.Random.Range(0, OuterWallTiles.Length)];//外墙
+                    GameObject instance = Instantiate(toInstantiate, new Vector3(-1, 0, 0f), Quaternion.identity) as GameObject;//实例化
+                    instance.transform.SetParent(boardHolder);
+
+                }
+                if ((x == -1 && y != 0) || x == columns || y == -1 || y == rows)
+                {
+                    GameObject toInstantiate = OuterWallTiles[UnityEngine.Random.Range(0, OuterWallTiles.Length)];//外墙
+                    GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;//实例化
+                    instance.transform.SetParent(boardHolder);
+
+                }
+                else if (GameManager.instance.level % 2 != 0)
+                {
+                    GameObject toInstantiate = floorTiles[UnityEngine.Random.Range(0, floorTiles.Length)];//地板
+                    GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;//实例化
+                    instance.transform.SetParent(boardHolder);
+                }
             }
         }
     }

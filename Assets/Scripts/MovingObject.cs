@@ -49,7 +49,6 @@ public abstract class MovingObject : MonoBehaviour
             return true;
         }
         else { GameManager.instance.playerTurn = true;  }
-
         return false;
     }
 

@@ -3,9 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using System.IO;
+using System.Text;
+using System;
 public class GameManager : MonoBehaviour
 {
+    public List<string> list;
+    public int castle_num;
+    public int bugfix = 0;
+    public int path_num;
+    public int currentloc;
+    public string currentname;
+    public List<string> castle_names;
+    public List<int> castle_fortune;
+    public List<int> path_danger;
+    public string tempname;
+    public List<int> graph;//1:城堡，2：城堡
     public bool doingSetup;
     GameObject levelImage;
     Text levelText;
@@ -15,15 +28,42 @@ public class GameManager : MonoBehaviour
         levelImage.SetActive(true);
         enabled = false;
     }
-
+    public void ReadFileList()
+    {
+        StreamReader sr;
+        sr = File.OpenText("D:\\qq" + "//" + "map.txt");
+        list = new List<string>();
+        string str;
+        while ((str = sr.ReadLine()) != null)
+            list.Add(str);
+        sr.Close();
+        sr.Dispose();
+        string[] line = list[0].Split(' ');
+        castle_num = int.Parse(line[0]);
+        path_num = int.Parse(line[1]);
+        for (int i = 1; i < 1 + castle_num; i++)
+        {
+            line = list[i].Split(' ');
+            castle_names.Add(line[0]);
+            castle_fortune.Add(int.Parse(line[1]));
+        }
+        for (int i = 1 + castle_num; i < list.ToArray().Length; i++)
+        {
+            line = list[i].Split(' ');
+            graph.Add(int.Parse(line[0]));
+            graph.Add(int.Parse(line[1]));
+            path_danger.Add(int.Parse(line[2]));
+        }
+    }
     public float levelStartDelay = 0.2f;
     public float times = 0;
     // Start is called before the first frame update
-    void Start(){
+    void Start()
+    {
         SceneManager.sceneLoaded += LevelWasLoaded;
     }
 
-    void LevelWasLoaded(Scene scene,LoadSceneMode mode)
+    void LevelWasLoaded(Scene scene, LoadSceneMode mode)
     {
         level++;
         InitGame();
@@ -32,9 +72,9 @@ public class GameManager : MonoBehaviour
     public int playerFoodPoints = 100;
     public bool playerTurn = true;
     BroadManager broadManager;
-    public int level ;
+    public int level;
     List<Enemy> enemies;
-    public bool enemyMoving=false;
+    public bool enemyMoving = false;
     public float turnDelay = 0.1f;
 
     void Update()
@@ -70,12 +110,13 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        ReadFileList();
         DontDestroyOnLoad(transform.gameObject);
         enemies = new List<Enemy>();
         broadManager = GetComponent<BroadManager>();
         InitGame();
     }
-    
+
     void InitGame()
     {
         doingSetup = true;
@@ -83,7 +124,7 @@ public class GameManager : MonoBehaviour
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
         //levelText.text = "Day " +level;
         //levelImage.SetActive (true);
-        Invoke("HideLevelImage",0);
+        Invoke("HideLevelImage", 0);
         enemies.Clear();
         broadManager.SetUpScene(level);
     }
