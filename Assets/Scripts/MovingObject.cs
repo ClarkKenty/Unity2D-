@@ -15,7 +15,7 @@ public abstract class MovingObject : MonoBehaviour
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
         rb2D = GetComponent<Rigidbody2D>();
-        inverseMoveTime = 5f / moveTime;
+        inverseMoveTime = 8f / moveTime;
     }
 
     protected abstract void OnCantMove<T>(T Component) where T : Component;
@@ -54,6 +54,8 @@ public abstract class MovingObject : MonoBehaviour
 
     protected virtual void AttempMove<T>(int xDir, int yDir) where T : Component
     {
+        if(GameManager.instance.gameoverid == 1)
+        return;
         RaycastHit2D hit;//存储线性投射检测到的障碍物
         bool canMove = Move(xDir, yDir, out hit);//接收方向信息，确定目的地并且判断该点是否存在障碍物
         if (hit.transform == null) return;

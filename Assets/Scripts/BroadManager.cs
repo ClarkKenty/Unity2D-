@@ -31,13 +31,16 @@ public class BroadManager : MonoBehaviour
     public GameObject[] foodTiles;
     public GameObject[] enemyTiles;
     public GameObject background;
+    public GameObject treasurechest;
     Text tribenum;
+    Text tribemes;
     Transform boardHolder;
     List<Vector3> gridPositions = new List<Vector3>();//所有可用位置数组
     //生成关卡
     public void SetUpScene(int level)
     {
         tribenum = GameObject.Find("tribeinfo").GetComponent<Text>();
+        tribemes = GameObject.Find("numText").GetComponent<Text>();
         if (level % 2 == 0)
         {
             tribenum.text = "部落:" + GameManager.instance.castle_names[GameManager.instance.currentloc];
@@ -52,16 +55,19 @@ public class BroadManager : MonoBehaviour
                 if (GameManager.instance.graph[i + 1] == GameManager.instance.currentloc)
                     dest.Add(GameManager.instance.graph[i]);
             }
+            int iii=1;
             for (int i = 0; i < dest.ToArray().Length; i++)
             {
                 GameObject instance = Instantiate(exitTile[0], new Vector3(columns - 1, rows - 1 - i * 3, 0f), Quaternion.identity) as GameObject;
                 instance.name = dest[i].ToString();
+                tribemes.text += "出口"+iii++.ToString()+"：通往"+"部落：" + GameManager.instance.castle_names[dest[i]] + "\n\n\n";
             }
             InitialiseList();
             LayoutObjectAtRandom(wallTiles, wallCount.minimum, wallCount.maximum);
             LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum);
             int enemyCount2 = (int)Mathf.Log(level, 2f);
             LayoutObjectAtRandom(enemyTiles, enemyCount2, enemyCount2);
+            Instantiate(treasurechest, new Vector3(17,13, 0f), Quaternion.identity);
             return;
         }
         rows = 8;

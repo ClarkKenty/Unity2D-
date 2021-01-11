@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public int bugfix = 0;
     public int path_num;
     public int currentloc;
+    public int previousloc;
     public string currentname;
     public List<string> castle_names;
     public List<int> castle_fortune;
@@ -21,10 +22,17 @@ public class GameManager : MonoBehaviour
     public List<int> graph;//1:城堡，2：城堡
     public bool doingSetup;
     GameObject levelImage;
+    public int gameoverid;
     Text levelText;
     public void GameOver()
     {
-        levelText.text = "YOU DIED";
+        if (playerFoodPoints > 0)
+            levelText.text = "GAME OVER!\n到达终点！";
+        else
+        {
+            levelText.text = "GAME OVER!\nYOU LOSE!";
+            gameoverid =1;
+        }
         levelImage.SetActive(true);
         enabled = false;
     }
@@ -70,6 +78,7 @@ public class GameManager : MonoBehaviour
     }
     public static GameManager instance = null;
     public int playerFoodPoints = 100;
+    public int playerTreasurePoints = 0;
     public bool playerTurn = true;
     BroadManager broadManager;
     public int level;
