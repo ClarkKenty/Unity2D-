@@ -8,6 +8,8 @@ public class Player : MovingObject
 {
     public Text foodText;
     public Text treasureText;
+    public Text endText;
+
     public int wallDamage = 1;
     public int pointsPerFood = 10;
     public int pointsPerSoda = 20;
@@ -26,10 +28,13 @@ public class Player : MovingObject
     {
         animator = GetComponent<Animator>();
         food = GameManager.instance.playerFoodPoints;
-        foodText.text = "Food:" + food;
+        treasurep = GameManager.instance.playerTreasurePoints;
+        foodText.text = "Health:" + food;
         treasureText.text = "Treasure:" + treasurep;
+        endText.text = "Destination:" + GameManager.instance.castle_names[GameManager.instance.castle_num-1];
         base.Start();
     }
+
 
     public void LoseFood(int loss)
     {
@@ -41,7 +46,6 @@ public class Player : MovingObject
         if (other.tag == "Treasure")
         {
             treasurep += GameManager.instance.castle_fortune[GameManager.instance.currentloc];
-            Debug.Log(GameManager.instance.castle_fortune[GameManager.instance.currentloc]);
             treasureText.text = "Treasure:" + treasurep;
             other.gameObject.SetActive(false);
         }
@@ -68,14 +72,11 @@ public class Player : MovingObject
                 GameManager.instance.previousloc = GameManager.instance.currentloc;
                 GameManager.instance.currentloc = int.Parse(other.name);
                 GameManager.instance.currentname = GameManager.instance.castle_names[int.Parse(other.name)];
-                for(int j = 0;j<GameManager.instance.path_num;j++)
+                for (int j = 0; j < GameManager.instance.path_num; j++)
                 {
-                    Debug.Log(GameManager.instance.currentloc);
-                    Debug.Log(GameManager.instance.graph[2*j]);
-                    if(GameManager.instance.currentloc==GameManager.instance.graph[2*j] && GameManager.instance.previousloc==GameManager.instance.graph[2*j+1] || GameManager.instance.currentloc==GameManager.instance.graph[2*j+1] && GameManager.instance.previousloc==GameManager.instance.graph[2*j])
+                    if (GameManager.instance.currentloc == GameManager.instance.graph[2 * j] && GameManager.instance.previousloc == GameManager.instance.graph[2 * j + 1] || GameManager.instance.currentloc == GameManager.instance.graph[2 * j + 1] && GameManager.instance.previousloc == GameManager.instance.graph[2 * j])
                     {
-                        Debug.Log("AA");
-                        food-=GameManager.instance.path_danger[j];
+                        food -= GameManager.instance.path_danger[j];
                     }
                 }
             }
@@ -126,7 +127,7 @@ public class Player : MovingObject
             GameManager.instance.GameOver();
             return;
         }
-        if(GameManager.instance.currentloc == GameManager.instance.castle_num-1 && GameManager.instance.level%2==0)
+        if (GameManager.instance.currentloc == GameManager.instance.castle_num - 1 && GameManager.instance.level % 2 == 0)
         {
             SoundManager.instance.musicSource.Stop();
             SoundManager.instance.PlaySingle(gameOverSound);
@@ -143,8 +144,8 @@ public class Player : MovingObject
     // Update is called once per frame
     void Update()
     {
-        if(GameManager.instance.gameoverid == 1)
-        return;
+        if (GameManager.instance.gameoverid == 1)
+            return;
         if (!GameManager.instance.playerTurn) return;//还在移动，拒绝指令
         int horizontal = 0;
         int vertical = 0;
