@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class click : MonoBehaviour
 {
-
     // Start is called before the first frame update
     public void Click()
     {
@@ -21,11 +20,12 @@ public class click : MonoBehaviour
     public void click2()
     {
         Text solu1 = GameManager.instance.solu1;
-        if(solu1.text!="")
+        if (solu1.text != "")
         {
             solu1.text = "";
             return;
         }
+        solu1.text = "最优路径（生命值）：";
         List<string> paths = new List<string>();
         int end = GameManager.instance.castle_num - 1;
         while (end != -1)
@@ -39,29 +39,30 @@ public class click : MonoBehaviour
             if (i == paths.ToArray().Length - 1)
             {
                 solu1.text += paths[i];
+                GameManager.instance.solution = solu1.text;
                 return;
             }
             solu1.text += paths[i] + "->";
         }
-        GameManager.instance.solution = solu1.text;
     }
 
     public void click3()
     {
         Text solu1 = GameManager.instance.solu1;
-        if(solu1.text!="")
+        if (solu1.text != "")
         {
             solu1.text = "";
             return;
         }
+        solu1.text = "最优路径（财富值）：";
         int end = GameManager.instance.castle_num - 1;
         int begin = 0;
-        while(begin!=end)
+        while (begin != end)
         {
-            solu1.text+=GameManager.instance.castle_names[begin] + "->";
+            solu1.text += GameManager.instance.castle_names[begin] + "->";
             begin = GameManager.instance.fortunepath[begin];
         }
-        solu1.text+=GameManager.instance.castle_names[begin];
+        solu1.text += GameManager.instance.castle_names[begin];
         GameManager.instance.solution = solu1.text;
     }
 

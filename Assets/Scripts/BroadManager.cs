@@ -40,15 +40,16 @@ public class BroadManager : MonoBehaviour
     //生成关卡
     public void SetUpScene(int level)
     {
+        Debug.Log(GameManager.instance.solution);
         tribenum = GameObject.Find("tribeinfo").GetComponent<Text>();
         tribemes = GameObject.Find("numText").GetComponent<Text>();
         solu = GameObject.Find("Solution_Text").GetComponent<Text>();
-        solu.text=GameManager.instance.solution;
+        solu.text = GameManager.instance.solution;
         if (level % 2 == 0)
         {
-            if(level!=2)
+            if (level != 2)
             {
-                GameManager.instance.pathshow+=("->" + GameManager.instance.castle_names[GameManager.instance.currentloc]);
+                GameManager.instance.pathshow += ("->" + GameManager.instance.castle_names[GameManager.instance.currentloc]);
             }
             tribenum.text = "部落:" + GameManager.instance.castle_names[GameManager.instance.currentloc];
             rows = 15;
@@ -62,17 +63,18 @@ public class BroadManager : MonoBehaviour
                 if (GameManager.instance.graph[i + 1] == GameManager.instance.currentloc)
                     dest.Add(GameManager.instance.graph[i]);
             }
-            int iii=1;
+            int iii = 1;
             for (int i = 0; i < dest.ToArray().Length; i++)
             {
                 GameObject instance = Instantiate(exitTile[0], new Vector3(columns - 1, rows - 1 - i * 3, 0f), Quaternion.identity) as GameObject;
                 instance.name = dest[i].ToString();
-                tribemes.text += "出口"+iii++.ToString()+"：通往"+"部落：" + GameManager.instance.castle_names[dest[i]] + "\n\n\n";
+                tribemes.text += "出口" + iii++.ToString() + "：通往" + "部落：" + GameManager.instance.castle_names[dest[i]] + "\n\n\n";
             }
             InitialiseList();
             LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum);
             int enemyCount2 = (int)Mathf.Log(level, 2f);
-            Instantiate(treasurechest, new Vector3(10f,7f, 0f), Quaternion.identity);
+            if (GameManager.instance.taketreasure[GameManager.instance.currentloc] == false)
+                Instantiate(treasurechest, new Vector3(10f, 7f, 0f), Quaternion.identity);//宝藏
             return;
         }
         rows = 6;
@@ -82,8 +84,8 @@ public class BroadManager : MonoBehaviour
         instance2.name = GameManager.instance.tempname;
         if (level != 1)
         {
-           GameObject exitback = Instantiate(exitTile[1], new Vector3(-1, 0, 0f), Quaternion.identity) as GameObject;
-           exitback.name = GameManager .instance.currentname;
+            GameObject exitback = Instantiate(exitTile[1], new Vector3(-1, 0, 0f), Quaternion.identity) as GameObject;
+            exitback.name = GameManager.instance.currentname;
         }
         InitialiseList();
         LayoutObjectAtRandom(wallTiles, wallCount.minimum, wallCount.maximum);
@@ -114,20 +116,20 @@ public class BroadManager : MonoBehaviour
         {
             for (int y = -1; y < rows + 1; y++)
             {
-                if(GameManager.instance.level%2==0 && x == columns -1 && y== -1) 
+                if (GameManager.instance.level % 2 == 0 && x == columns - 1 && y == -1)
                 {
-                    Instantiate(wallTiles[0] ,new Vector3(x,y,0f), Quaternion.identity);
+                    Instantiate(wallTiles[0], new Vector3(x, y, 0f), Quaternion.identity);
                     continue;
                 }
-                if(GameManager.instance.level%2==0 && x == columns -2 && y== -1) 
+                if (GameManager.instance.level % 2 == 0 && x == columns - 2 && y == -1)
                 {
-                    Instantiate(wallTiles[0] ,new Vector3(x,y,0f), Quaternion.identity);
+                    Instantiate(wallTiles[0], new Vector3(x, y, 0f), Quaternion.identity);
                     continue;
                 }
                 if (GameManager.instance.level % 2 == 0)
                 {
                     GameObject instance2 = Instantiate(background, new Vector3(11f, 7.5f, 0f), Quaternion.identity) as GameObject;
-                    Instantiate(OuterWallTiles[0], new Vector3(-1f,0f,0f), Quaternion.identity);
+                    Instantiate(OuterWallTiles[0], new Vector3(-1f, 0f, 0f), Quaternion.identity);
                     instance2.transform.SetParent(boardHolder);
                 }
                 if (GameManager.instance.level == 1)

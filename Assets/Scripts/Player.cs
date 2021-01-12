@@ -32,7 +32,7 @@ public class Player : MovingObject
         treasurep = GameManager.instance.playerTreasurePoints;
         foodText.text = "Health:" + food;
         treasureText.text = "Treasure:" + treasurep;
-        endText.text = "Destination:" + GameManager.instance.castle_names[GameManager.instance.castle_num-1];
+        endText.text = "Destination:" + GameManager.instance.castle_names[GameManager.instance.castle_num - 1];
         base.Start();
     }
 
@@ -46,13 +46,14 @@ public class Player : MovingObject
 
         if (other.tag == "Treasure")
         {
+            GameManager.instance.taketreasure[GameManager.instance.currentloc] = true;
             treasurep += GameManager.instance.castle_fortune[GameManager.instance.currentloc];
             treasureText.text = "Treasure:" + treasurep;
             other.gameObject.SetActive(false);
         }
-        else if(other.tag == "Enemy")
+        else if (other.tag == "Enemy")
         {
-            food -=EnemyDamage;
+            food -= EnemyDamage;
             foodText.text = "Health:" + food;
             other.gameObject.SetActive(false);
         }
@@ -165,7 +166,6 @@ public class Player : MovingObject
         {
             GameManager.instance.playerTurn = false;
             AttempMove<Wall>(horizontal, vertical);
-
         }
     }
 }
