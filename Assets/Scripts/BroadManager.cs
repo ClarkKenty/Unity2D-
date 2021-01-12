@@ -18,7 +18,7 @@ public class BroadManager : MonoBehaviour
     }
 
     public Count wallCount = new Count(5, 9);
-    public Count foodCount = new Count(1, 5);
+    public Count foodCount = new Count(1, 4);
     public int rows = 8;
     public int columns = 8;
     public GameObject[] floorTiles;
@@ -34,6 +34,7 @@ public class BroadManager : MonoBehaviour
     public GameObject treasurechest;
     Text tribenum;
     Text tribemes;
+    Text solu;
     Transform boardHolder;
     List<Vector3> gridPositions = new List<Vector3>();//所有可用位置数组
     //生成关卡
@@ -41,6 +42,8 @@ public class BroadManager : MonoBehaviour
     {
         tribenum = GameObject.Find("tribeinfo").GetComponent<Text>();
         tribemes = GameObject.Find("numText").GetComponent<Text>();
+        solu = GameObject.Find("Solution_Text").GetComponent<Text>();
+        solu.text=GameManager.instance.solution;
         if (level % 2 == 0)
         {
             if(level!=2)
@@ -48,8 +51,8 @@ public class BroadManager : MonoBehaviour
                 GameManager.instance.pathshow+=("->" + GameManager.instance.castle_names[GameManager.instance.currentloc]);
             }
             tribenum.text = "部落:" + GameManager.instance.castle_names[GameManager.instance.currentloc];
-            rows = 20;
-            columns = 30;
+            rows = 15;
+            columns = 22;
             BoardSetup();
             List<int> dest = new List<int>();
             for (int i = 0; i < GameManager.instance.graph.ToArray().Length; i += 2)
@@ -67,14 +70,12 @@ public class BroadManager : MonoBehaviour
                 tribemes.text += "出口"+iii++.ToString()+"：通往"+"部落：" + GameManager.instance.castle_names[dest[i]] + "\n\n\n";
             }
             InitialiseList();
-            LayoutObjectAtRandom(wallTiles, wallCount.minimum, wallCount.maximum);
             LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum);
             int enemyCount2 = (int)Mathf.Log(level, 2f);
-            LayoutObjectAtRandom(enemyTiles, enemyCount2, enemyCount2);
-            Instantiate(treasurechest, new Vector3(17,13, 0f), Quaternion.identity);
+            Instantiate(treasurechest, new Vector3(10f,7f, 0f), Quaternion.identity);
             return;
         }
-        rows = 8;
+        rows = 6;
         columns = 15;
         BoardSetup();
         GameObject instance2 = Instantiate(exitTile[0], new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity) as GameObject;
@@ -113,9 +114,19 @@ public class BroadManager : MonoBehaviour
         {
             for (int y = -1; y < rows + 1; y++)
             {
+                if(GameManager.instance.level%2==0 && x == columns -1 && y== -1) 
+                {
+                    Instantiate(wallTiles[0] ,new Vector3(x,y,0f), Quaternion.identity);
+                    continue;
+                }
+                if(GameManager.instance.level%2==0 && x == columns -2 && y== -1) 
+                {
+                    Instantiate(wallTiles[0] ,new Vector3(x,y,0f), Quaternion.identity);
+                    continue;
+                }
                 if (GameManager.instance.level % 2 == 0)
                 {
-                    GameObject instance2 = Instantiate(background, new Vector3(14.5f, 9.5f, 0f), Quaternion.identity) as GameObject;
+                    GameObject instance2 = Instantiate(background, new Vector3(11f, 7.5f, 0f), Quaternion.identity) as GameObject;
                     Instantiate(OuterWallTiles[0], new Vector3(-1f,0f,0f), Quaternion.identity);
                     instance2.transform.SetParent(boardHolder);
                 }

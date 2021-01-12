@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
-
 public class click : MonoBehaviour
 {
 
     // Start is called before the first frame update
-    public Text solu1;
     public void Click()
     {
 
@@ -23,6 +20,7 @@ public class click : MonoBehaviour
 
     public void click2()
     {
+        Text solu1 = GameManager.instance.solu1;
         if(solu1.text!="")
         {
             solu1.text = "";
@@ -45,10 +43,12 @@ public class click : MonoBehaviour
             }
             solu1.text += paths[i] + "->";
         }
+        GameManager.instance.solution = solu1.text;
     }
 
     public void click3()
     {
+        Text solu1 = GameManager.instance.solu1;
         if(solu1.text!="")
         {
             solu1.text = "";
@@ -62,5 +62,7 @@ public class click : MonoBehaviour
             begin = GameManager.instance.fortunepath[begin];
         }
         solu1.text+=GameManager.instance.castle_names[begin];
+        GameManager.instance.solution = solu1.text;
     }
+
 }

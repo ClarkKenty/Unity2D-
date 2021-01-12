@@ -11,8 +11,8 @@ public class Player : MovingObject
     public Text endText;
 
     public int wallDamage = 1;
-    public int pointsPerFood = 10;
-    public int pointsPerSoda = 20;
+    public int pointsPerFood = 5;
+    public int pointsPerSoda = 5;
     public float restartLevelDelay = 1f;
     int food = 100;
     int treasurep = 0;
@@ -23,6 +23,7 @@ public class Player : MovingObject
     public AudioClip drinkSound1;
     public AudioClip drinkSound2;
     public AudioClip gameOverSound;
+    public int EnemyDamage = 10;
     Animator animator;
     protected override void Start()
     {
@@ -49,15 +50,21 @@ public class Player : MovingObject
             treasureText.text = "Treasure:" + treasurep;
             other.gameObject.SetActive(false);
         }
-        if (other.tag == "Chest")
+        else if(other.tag == "Enemy")
         {
-            food += pointsPerFood;
+            food -=EnemyDamage;
             foodText.text = "Health:" + food;
             other.gameObject.SetActive(false);
         }
         else if (other.tag == "Soda")
         {
             food += pointsPerSoda;
+            foodText.text = "Health:" + food;
+            other.gameObject.SetActive(false);
+        }
+        else if (other.tag == "Food")
+        {
+            food += pointsPerFood;
             foodText.text = "Health:" + food;
             other.gameObject.SetActive(false);
         }
@@ -120,6 +127,7 @@ public class Player : MovingObject
 
     void CheckIfGameOver()
     {
+        GameManager.instance.playerFoodPoints = food;
         if (food <= 0)
         {
             SoundManager.instance.musicSource.Stop();

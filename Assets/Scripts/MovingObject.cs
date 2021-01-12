@@ -15,7 +15,7 @@ public abstract class MovingObject : MonoBehaviour
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
         rb2D = GetComponent<Rigidbody2D>();
-        inverseMoveTime = 8f / moveTime;
+        inverseMoveTime = 2f / moveTime;
     }
 
     protected abstract void OnCantMove<T>(T Component) where T : Component;

@@ -9,12 +9,14 @@ using System;
 public class GameManager : MonoBehaviour
 {
     public int[] father;
+    public string solution;
     public List<string> list;
     public int castle_num;
     public int bugfix = 0;
     public int path_num;
     public int currentloc;
     public int previousloc;
+    public Text solu1;
     public string currentname;
     public List<string> castle_names;
     public List<int> castle_fortune;
@@ -31,19 +33,20 @@ public class GameManager : MonoBehaviour
     public int[] fortunepath;
     public string pathshow;
     HashSet<int> set;
-    int maxvalue = 0;
     int pathcount = 0;
     public void GameOver()
     {
-        if (playerFoodPoints > 0)
-            levelText.text = "到达终点！";
-        else
+        if (playerFoodPoints <= 0)
         {
             levelText.text = "GAME OVER!\nYOU LOSE!";
             gameoverid = 1;
         }
+        else
+        {
+            levelText.text = "到达终点！";
+        }
         levelImage.SetActive(true);
-        gameoverpath.text=pathshow.ToString();
+        gameoverpath.text = pathshow.ToString();
         enabled = false;
     }
 
@@ -173,7 +176,7 @@ public class GameManager : MonoBehaviour
     public int playerTreasurePoints = 0;
     public bool playerTurn = true;
     BroadManager broadManager;
-    public int level;
+    public int level = 1;
     List<Enemy> enemies;
     public bool enemyMoving = false;
     public float turnDelay = 0.1f;
@@ -214,14 +217,14 @@ public class GameManager : MonoBehaviour
         ReadFileList();
         graphinit();
         set = new HashSet<int>();
-        pathshow+=("路线："+castle_names[0]);
+        pathshow += ("路线：" + castle_names[0]);
         fortunepath = new int[castle_num];
         for (int i = 0; i < castle_num; i++)
         {
             fortunepath[i] = -1;
         }
         dijkstra(castle_num - 1);
-        Debug.Log(dfs(0, 100));
+        dfs(0, 100);
         DontDestroyOnLoad(transform.gameObject);
         enemies = new List<Enemy>();
         broadManager = GetComponent<BroadManager>();
@@ -233,6 +236,7 @@ public class GameManager : MonoBehaviour
         doingSetup = true;
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
+        solu1 = GameObject.Find("Solution_Text").GetComponent<Text>();
         gameoverpath = GameObject.Find("gameovertext").GetComponent<Text>();
         //levelText.text = "Day " +level;
         //levelImage.SetActive (true);
