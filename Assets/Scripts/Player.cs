@@ -52,13 +52,13 @@ public class Player : MovingObject
         if (other.tag == "Chest")
         {
             food += pointsPerFood;
-            foodText.text = "Food:" + food;
+            foodText.text = "Health:" + food;
             other.gameObject.SetActive(false);
         }
         else if (other.tag == "Soda")
         {
             food += pointsPerSoda;
-            foodText.text = "Food:" + food;
+            foodText.text = "Health:" + food;
             other.gameObject.SetActive(false);
         }
         else if (other.tag == "Exit")
@@ -108,7 +108,7 @@ public class Player : MovingObject
     protected override void AttempMove<T>(int xDir, int yDir)
     {
         LoseFood(1);
-        foodText.text = "Food:" + food;
+        foodText.text = "Health:" + food;
         base.AttempMove<T>(xDir, yDir);
         RaycastHit2D hit;
         if (Move(xDir, yDir, out hit))

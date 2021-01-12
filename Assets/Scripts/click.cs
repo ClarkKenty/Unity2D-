@@ -23,6 +23,11 @@ public class click : MonoBehaviour
 
     public void click2()
     {
+        if(solu1.text!="")
+        {
+            solu1.text = "";
+            return;
+        }
         List<string> paths = new List<string>();
         int end = GameManager.instance.castle_num - 1;
         while (end != -1)
@@ -36,10 +41,26 @@ public class click : MonoBehaviour
             if (i == paths.ToArray().Length - 1)
             {
                 solu1.text += paths[i];
-                Debug.Log(paths[i]);
                 return;
             }
             solu1.text += paths[i] + "->";
         }
+    }
+
+    public void click3()
+    {
+        if(solu1.text!="")
+        {
+            solu1.text = "";
+            return;
+        }
+        int end = GameManager.instance.castle_num - 1;
+        int begin = 0;
+        while(begin!=end)
+        {
+            solu1.text+=GameManager.instance.castle_names[begin] + "->";
+            begin = GameManager.instance.fortunepath[begin];
+        }
+        solu1.text+=GameManager.instance.castle_names[begin];
     }
 }

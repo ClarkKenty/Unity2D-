@@ -43,6 +43,10 @@ public class BroadManager : MonoBehaviour
         tribemes = GameObject.Find("numText").GetComponent<Text>();
         if (level % 2 == 0)
         {
+            if(level!=2)
+            {
+                GameManager.instance.pathshow+=("->" + GameManager.instance.castle_names[GameManager.instance.currentloc]);
+            }
             tribenum.text = "部落:" + GameManager.instance.castle_names[GameManager.instance.currentloc];
             rows = 20;
             columns = 30;
