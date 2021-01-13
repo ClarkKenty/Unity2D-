@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿//该脚本负责游戏场景的布置
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
 public class BroadManager : MonoBehaviour
 {
-    [Serializable]
+    [Serializable]//可在unity编辑模式修改变量
     public class Count
     {
         public int minimum;
@@ -19,51 +20,50 @@ public class BroadManager : MonoBehaviour
 
     public Count wallCount = new Count(5, 9);
     public Count foodCount = new Count(1, 4);
-    public int rows = 8;
-    public int columns = 8;
-    public GameObject[] floorTiles;
-    public GameObject[] OuterWallTiles;
+    public int rows = 8;//地图大小
+    public int columns = 8;//地图大小
+    public GameObject[] floorTiles;//地面物体
+    public GameObject[] OuterWallTiles;//外墙物体
 
-    public GameObject[] exitTile;
+    public GameObject[] exitTile;//出口物体
 
-    public GameObject[] wallTiles;
-    public GameObject bd;
+    public GameObject[] wallTiles;//外墙物体
+    public GameObject bd;//背景物体
 
-    public GameObject[] foodTiles;
-    public GameObject[] enemyTiles;
-    public GameObject background;
-    public GameObject treasurechest;
-    Text tribenum;
-    Text tribemes;
-    Text solu;
+    public GameObject[] foodTiles;//食物物体
+    public GameObject[] enemyTiles;//敌人物体
+    public GameObject background;//背景物体
+    public GameObject treasurechest;//宝箱物体
+    Text tribenum;//当前部落名称文本框
+    Text tribemes;//部落信息文本框
+    Text solu;//显示的最佳路径文本框
     Transform boardHolder;
     List<Vector3> gridPositions = new List<Vector3>();//所有可用位置数组
     //生成关卡
-    public void SetUpScene(int level)
+    public void SetUpScene(int level)//生成场景
     {
-        Debug.Log(GameManager.instance.solution);
         tribenum = GameObject.Find("tribeinfo").GetComponent<Text>();
         tribemes = GameObject.Find("numText").GetComponent<Text>();
         solu = GameObject.Find("Solution_Text").GetComponent<Text>();
         solu.text = GameManager.instance.solution;
-        if (level % 2 == 0)
+        if (level % 2 == 0)//部落场景生成
         {
             if (level != 2)
             {
                 GameManager.instance.pathshow += ("->" + GameManager.instance.castle_names[GameManager.instance.currentloc]);
             }
             tribenum.text = "部落:" + GameManager.instance.castle_names[GameManager.instance.currentloc];
-            rows = 15;
-            columns = 22;
-            for (int i = -20; i < 40; i++)
+            rows = 15;//部落地图大小
+            columns = 22;//部落地图大小
+            for (int i = -20; i < 40; i++)//生成全图覆盖的草地背景
             {
                 for (int j = 20; j > -20; j--)
                 {
-                    Instantiate(bd, new Vector3(i, j, 0f), Quaternion.identity);
+                    Instantiate(bd, new Vector3(i, j, 0f), Quaternion.identity);//草地物体实例化
                 }
             }
-            BoardSetup();
-            List<int> dest = new List<int>();
+            BoardSetup();//生成外墙等
+            List<int> dest = new List<int>();//生成邻接部落提示文本
             for (int i = 0; i < GameManager.instance.graph.ToArray().Length; i += 2)
             {
                 if (GameManager.instance.graph[i] == GameManager.instance.currentloc)
@@ -79,12 +79,14 @@ public class BroadManager : MonoBehaviour
                 tribemes.text += "出口" + iii++.ToString() + "：通往" + "部落：" + GameManager.instance.castle_names[dest[i]] + "\n\n\n";
             }
             InitialiseList();
-            LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum);
+            LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum);//随机生成食物
             int enemyCount2 = (int)Mathf.Log(level, 2f);
             if (GameManager.instance.taketreasure[GameManager.instance.currentloc] == false)
                 Instantiate(treasurechest, new Vector3(10f, 7f, 0f), Quaternion.identity);//宝藏
             return;
         }
+        //道路场景的生成
+
         for (int i = -20; i < 40; i++)
         {
             for (int j = 20; j > -20; j--)
@@ -92,8 +94,8 @@ public class BroadManager : MonoBehaviour
                 Instantiate(bd, new Vector3(i, j, 0f), Quaternion.identity);
             }
         }
-        rows = 6;
-        columns = 15;
+        rows = 8;//道路大小
+        columns = 20;//道路大小
         BoardSetup();
         GameObject instance2 = Instantiate(exitTile[0], new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity) as GameObject;
         instance2.name = GameManager.instance.tempname;
@@ -104,9 +106,9 @@ public class BroadManager : MonoBehaviour
         }
         InitialiseList();
         LayoutObjectAtRandom(wallTiles, wallCount.minimum, wallCount.maximum);
-        LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum);
+        LayoutObjectAtRandom(foodTiles, foodCount.minimum, foodCount.maximum);//随机生成食物
         int enemyCount = (int)Mathf.Log(level, 2f);
-        LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
+        LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);//随机生成敌人
 
     }
 

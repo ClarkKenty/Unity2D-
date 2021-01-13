@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿//该脚本控制敌人的移动和攻击行为（暂未完善）
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MovingObject
+public class Enemy : MovingObject//Enemy继承自MovingObject对象
 {
 
-    private Animator animator;
+    private Animator animator;//动画控制器
     bool skipMove;
     public int playerDamage = 1;
 

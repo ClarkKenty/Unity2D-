@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//移动的物体抽象类 player和emeny皆继承自此类
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,13 +16,13 @@ public abstract class MovingObject : MonoBehaviour
     {
         boxCollider2D = GetComponent<BoxCollider2D>();
         rb2D = GetComponent<Rigidbody2D>();
-        inverseMoveTime = 2f / moveTime;
+        inverseMoveTime = 2f / moveTime;//控制移动速度
     }
 
     protected abstract void OnCantMove<T>(T Component) where T : Component;
 
     protected IEnumerator SmoothMovement(Vector3 end)
-    {//平滑移动
+    {//平滑移动，防止移动时画面为瞬移
         float sqrRemainDistance = (transform.position - end).sqrMagnitude;
 
         while (sqrRemainDistance > float.Epsilon)

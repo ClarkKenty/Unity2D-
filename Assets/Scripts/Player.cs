@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//该脚本控制主角的行为
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,13 +17,13 @@ public class Player : MovingObject
     public float restartLevelDelay = 1f;
     int food = 100;
     int treasurep = 0;
-    public AudioClip moveSound1;
+    public AudioClip moveSound1;//移动声音
     public AudioClip moveSound2;
-    public AudioClip eatSound1;
+    public AudioClip eatSound1;//吃东西的声音
     public AudioClip eatSound2;
-    public AudioClip drinkSound1;
+    public AudioClip drinkSound1;//喝饮料的声音
     public AudioClip drinkSound2;
-    public AudioClip gameOverSound;
+    public AudioClip gameOverSound;//死亡声音
     public int EnemyDamage = 10;
     Animator animator;
     protected override void Start()
@@ -41,41 +42,41 @@ public class Player : MovingObject
     {
         CheckIfGameOver();
     }
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)//玩家触碰到其他实物
     {
 
-        if (other.tag == "Treasure")
+        if (other.tag == "Treasure")//该实物为宝藏
         {
             GameManager.instance.taketreasure[GameManager.instance.currentloc] = true;
-            treasurep += GameManager.instance.castle_fortune[GameManager.instance.currentloc];
+            treasurep += GameManager.instance.castle_fortune[GameManager.instance.currentloc];//加钱
             treasureText.text = "Treasure:" + treasurep;
             other.gameObject.SetActive(false);
         }
-        else if (other.tag == "Enemy")
+        else if (other.tag == "Enemy")//该实物为敌人
         {
             food -= EnemyDamage;
             foodText.text = "Health:" + food;
             other.gameObject.SetActive(false);
         }
-        else if (other.tag == "Soda")
+        else if (other.tag == "Soda")//该实物为饮料
         {
             food += pointsPerSoda;
-            foodText.text = "Health:" + food;
+            foodText.text = "Health:" + food;//加血
             other.gameObject.SetActive(false);
         }
-        else if (other.tag == "Food")
+        else if (other.tag == "Food")//该实物为食物
         {
             food += pointsPerFood;
-            foodText.text = "Health:" + food;
+            foodText.text = "Health:" + food;//加血
             other.gameObject.SetActive(false);
         }
-        else if (other.tag == "Exit")
+        else if (other.tag == "Exit")//该实物为出口
         {
             if (other.name == "Exit" || other.name == "Exit2")
             {
                 other.name = "0";
             }
-            if (GameManager.instance.level % 2 == 0)
+            if (GameManager.instance.level % 2 == 0)//玩家触碰的时部落中的出口
             {
                 GameManager.instance.previousloc = GameManager.instance.currentloc;
                 GameManager.instance.currentloc = int.Parse(other.name);
@@ -84,7 +85,7 @@ public class Player : MovingObject
                 {
                     if (GameManager.instance.currentloc == GameManager.instance.graph[2 * j] && GameManager.instance.previousloc == GameManager.instance.graph[2 * j + 1] || GameManager.instance.currentloc == GameManager.instance.graph[2 * j + 1] && GameManager.instance.previousloc == GameManager.instance.graph[2 * j])
                     {
-                        food -= GameManager.instance.path_danger[j];
+                        food -= GameManager.instance.path_danger[j];//进入道路，玩家扣除对应权值的血量
                     }
                 }
             }
@@ -92,7 +93,7 @@ public class Player : MovingObject
             Invoke("Restart", restartLevelDelay);
             enabled = false;
         }
-        else if (other.tag == "back")
+        else if (other.tag == "back")//该实物为回退出口
         {
             GameManager.instance.tempname = other.name;
             GameManager.instance.currentloc = GameManager.instance.previousloc;
@@ -151,7 +152,7 @@ public class Player : MovingObject
         animator.SetTrigger("playerChop");
     }
     // Update is called once per frame
-    void Update()
+    void Update()//接收玩家的键盘输入，角色进行移动
     {
         if (GameManager.instance.gameoverid == 1)
             return;

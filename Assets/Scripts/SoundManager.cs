@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//该脚本控制音效的播放
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

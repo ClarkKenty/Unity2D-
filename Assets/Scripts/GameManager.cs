@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//该脚本是游戏的主要控制器，生成Dijkstra算法和dfs算法等，控制游戏的开始/结束，关卡的加载
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,44 +9,44 @@ using System.Text;
 using System;
 public class GameManager : MonoBehaviour
 {
-    public int[] father;
+    public int[] father;//dijkstra算法的路径还原
     public string solution;
     public List<string> list;
-    public int castle_num;
+    public int castle_num;//顶点数
     public int bugfix = 0;
-    public int path_num;
-    public int currentloc;
-    public int previousloc;
-    public Text solu1;
+    public int path_num;//边数
+    public int currentloc;//玩家当前所在场景
+    public int previousloc;//上一个场景
+    public Text solu1;//最佳路径文本框
     public string currentname;
-    public List<string> castle_names;
-    public List<int> castle_fortune;
-    public List<int> path_danger;
+    public List<string> castle_names;//顶点名字
+    public List<int> castle_fortune;//顶点权值
+    public List<int> path_danger;//边权值
     public string tempname;
-    public List<int> graph;//1:城堡，2：城堡
+    public List<int> graph;//每两个一组，代表两个顶点的连接
     public bool doingSetup;
-    int INF = 99999;
+    int INF = 99999;//定义无限大
     GameObject levelImage;
     public int gameoverid;
     public int[,] cost;//cost为邻接矩阵,castle_num为城堡数量，即顶点数
     Text levelText;
-    Text gameoverpath;
-    public int[] fortunepath;
+    Text gameoverpath;//游戏结束后显示经过的路径
+    public int[] fortunepath;//dfs算法路径还原
     public string pathshow;
-    HashSet<int> set;
-    public void GameOver()
+    HashSet<int> set;//集合，用于dfs算法
+    public void GameOver()//游戏结束
     {
-        if (playerFoodPoints <= 0)
+        if (playerFoodPoints <= 0)//玩家死亡，游戏结束
         {
             levelText.text = "GAME OVER!\nYOU LOSE!";
             gameoverid = 1;
         }
-        else
+        else//玩家到达终点，游戏结束
         {
             levelText.text = "到达终点！";
         }
         levelImage.SetActive(true);
-        gameoverpath.text = pathshow.ToString();
+        gameoverpath.text = pathshow.ToString();//显示经过的路径
         enabled = false;
     }
     public int dfs(int origin, int blood)//origin为起点，blood为初始血量100
@@ -79,7 +80,7 @@ public class GameManager : MonoBehaviour
         return value;//返回值为从该点到终点所有已获得的财富
     }
 
-    public void graphinit()
+    public void graphinit()//图结构的初始化
     {
         cost = new int[castle_num, castle_num];//邻接矩阵
         for (int a = 0; a < castle_num; a++)
@@ -91,8 +92,8 @@ public class GameManager : MonoBehaviour
         }
         for (int k = 0; k < graph.ToArray().Length; k += 2)
         {
-            cost[graph[k], graph[k + 1]] = path_danger[k / 2];
-            cost[graph[k + 1], graph[k]] = path_danger[k / 2];
+            cost[graph[k], graph[k + 1]] = path_danger[k / 2];//边的权值
+            cost[graph[k + 1], graph[k]] = path_danger[k / 2];//边的权值
         }
     }
     public int dijkstra(int kk)
@@ -127,7 +128,7 @@ public class GameManager : MonoBehaviour
         }
         return d[kk];
     }
-    public void ReadFileList()
+    public void ReadFileList()//读取地图文件
     {
         StreamReader sr;
         sr = File.OpenText("D:\\qq" + "//" + "map.txt");
@@ -154,7 +155,7 @@ public class GameManager : MonoBehaviour
             path_danger.Add(int.Parse(line[2]));
         }
     }
-    public float levelStartDelay = 0.2f;
+    public float levelStartDelay = 0.2f;//进入下一场景前有0.2s的延迟，防止画面突兀
     public float times = 0;
     // Start is called before the first frame update
     void Start()
@@ -168,8 +169,8 @@ public class GameManager : MonoBehaviour
         InitGame();
     }
     public static GameManager instance = null;
-    public int playerFoodPoints = 100;
-    public int playerTreasurePoints = 0;
+    public int playerFoodPoints = 100;//玩家血量
+    public int playerTreasurePoints = 0;//玩家财富量
     public bool playerTurn = true;
     BroadManager broadManager;
     public int level = 1;
@@ -178,7 +179,7 @@ public class GameManager : MonoBehaviour
     public float turnDelay = 0.1f;
     public bool[] taketreasure;
 
-    void Update()
+    void Update()//敌人移动脚本有问题，所以该函数先不执行
     {
         return;
         if (enemyMoving) return;
@@ -233,7 +234,7 @@ public class GameManager : MonoBehaviour
         InitGame();
     }
 
-    void InitGame()
+    void InitGame()//游戏初始化
     {
         doingSetup = true;
         levelImage = GameObject.Find("LevelImage");
@@ -246,7 +247,6 @@ public class GameManager : MonoBehaviour
         enemies.Clear();
         broadManager.SetUpScene(level);
     }
-
     public void AddEnemyToList(Enemy script)
     {
         enemies.Add(script);
