@@ -27,6 +27,7 @@ public class BroadManager : MonoBehaviour
     public GameObject[] exitTile;
 
     public GameObject[] wallTiles;
+    public GameObject bd;
 
     public GameObject[] foodTiles;
     public GameObject[] enemyTiles;
@@ -54,6 +55,13 @@ public class BroadManager : MonoBehaviour
             tribenum.text = "部落:" + GameManager.instance.castle_names[GameManager.instance.currentloc];
             rows = 15;
             columns = 22;
+            for (int i = -20; i < 40; i++)
+            {
+                for (int j = 20; j > -20; j--)
+                {
+                    Instantiate(bd, new Vector3(i, j, 0f), Quaternion.identity);
+                }
+            }
             BoardSetup();
             List<int> dest = new List<int>();
             for (int i = 0; i < GameManager.instance.graph.ToArray().Length; i += 2)
@@ -76,6 +84,13 @@ public class BroadManager : MonoBehaviour
             if (GameManager.instance.taketreasure[GameManager.instance.currentloc] == false)
                 Instantiate(treasurechest, new Vector3(10f, 7f, 0f), Quaternion.identity);//宝藏
             return;
+        }
+        for (int i = -20; i < 40; i++)
+        {
+            for (int j = 20; j > -20; j--)
+            {
+                Instantiate(bd, new Vector3(i, j, 0f), Quaternion.identity);
+            }
         }
         rows = 6;
         columns = 15;
